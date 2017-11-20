@@ -95,18 +95,19 @@ class model {
         return $sql;
     }
     private function update() {
-        $tableName = $this->tablename;
-        $sql = " UPDATE " .$tableName." SET password='9999' WHERE id=".$this->id;
+
+        $sql = " UPDATE " .$this->tableName." SET password='9999' WHERE id=".$this->id;
+        echo $sql;
         return $sql;
-        echo 'I just updated record' . $this->id;
     }
-    public function delete() {
+    public function delete($id) {
         $db = dbConn::getConnection();
-        $sql = 'DELETE FROM '.$this->tableName.' WHERE id='.$this->id;
+        $sql = 'DELETE FROM '.$this->tableName.' WHERE id='.$id;
+        echo $sql;
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        echo 'I just deleted record: ' . $this->id .'<br>';
-    }*/
+        //echo 'I just deleted record: ' . $this->id .'<br>';
+    }
 }
 class account extends model {
     public $id;
@@ -175,22 +176,22 @@ echo '<h1>Selecting an id from Todos Table where ID is : 7 <h1>';
 $record = todos::findOne(7);
 displaytable::showtable($record);
 
-echo '<h1>Insert a record in Todos Table<h1>';
-$record = todos::create();
-$record->save();
-
+//echo '<h1>Insert a record in Todos Table<h1>';
+//$record = todos::create();
+//$record->save();
 
 echo '<h1>Update password in Accounts Table where ID is : 12 <h1>';
-$obj = new account;
-$obj->save();
 $record = accounts::create();
-$result = $record->findAll();
-displaytable::shoowtable($result);
+$record->id=12;
+$record->save();
 
-$record = new todo();
-$record->message = 'some task';
-$record->isdone = 0;
-$record = todos::create();
+echo '<h1>Delete ID 13 from Account Table <h1>';
+$record = accounts::create();
+$record->delete(13);
+
+
+
+
 
 
 ?>
