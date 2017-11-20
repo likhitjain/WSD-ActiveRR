@@ -9,29 +9,22 @@ define('PASSWORD', 'mNoRgZ79');
 define('CONNECTION', 'sql2.njit.edu');
 
 class dbConn{
-    //variable to hold connection object.
+    
     protected static $db;
-    //private construct - class cannot be instatiated externally.
     private function __construct() {
         try {
-            // assign PDO object to db variable
+
             self::$db = new PDO( 'mysql:host=' . CONNECTION .';dbname=' . DATABASE, USERNAME, PASSWORD );
             self::$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-            echo "Connection Successful</br>";
         }
         catch (PDOException $e) {
-            //Output error - would normally log this to error file rather than output to user.
             echo "Connection Error: " . $e->getMessage();
         }
     }
-    // get connection function. Static method - accessible without instantiation
     public static function getConnection() {
-        //Guarantees single instance, if no connection object exists then create one.
         if (!self::$db) {
-            //new connection object.
             new dbConn();
         }
-        //return connection.
         return self::$db;
     }
 }
@@ -53,14 +46,15 @@ class collection {
     }
     static public function findOne($id) {
         $db = dbConn::getConnection();
-        $tableName = get_called_class();
-        $sql = 'SELECT * FROM ' . $tableName . ' WHERE id =' . $id;
+        $tableName = get_called_class();        
+        $sql = "SELECT * FROM " . $tableName . " WHERE id =" . $id;
         $statement = $db->prepare($sql);
         $statement->execute();
         $class = static::$modelName;
         $statement->setFetchMode(PDO::FETCH_CLASS, $class);
+        //print_r($statement);
         $recordsSet =  $statement->fetchAll();
-        return $recordsSet[0];
+        return $recordsSet;     
     }
 }
 class accounts extends collection {
@@ -72,31 +66,37 @@ class todos extends collection {
 class model {
 
     protected $tableName;
+    static $columnString;
+    static $valueString;
 
     public function save()
     {
-        if ($this->id = '') {
+
+        if ($this->id == '') {
             $sql = $this->insert();
+
         } else {
             $sql = $this->update();
         }
+            echo $sql;
+
         $db = dbConn::getConnection();
         $statement = $db->prepare($sql);
         $statement->execute();
-        $tableName = get_called_class();
-        $array = get_object_vars($this);
+      //  $tableName = $this->tableName;
+/*        $array = get_object_vars($this);
         $columnString = implode(',', $array);
-        $valueString = ":".implode(',:', $array);
+        $valueString = ":".implode(',:', $array);*/
        // echo "INSERT INTO $tableName (" . $columnString . ") VALUES (" . $valueString . ")</br>";
-        echo 'I just saved record: ' . $this->id;
+       // echo 'I just saved record: ' . $this->id;
     }
     private function insert() {
-        $sql = "INSERT INTO $tableName (" . $columnString . ") VALUES (" . $valueString . ")</br>";
-        echo $sql;
+        $sql = "INSERT INTO " .$this->tableName." (" . static::$columnString . ") VALUES (" . static::$valueString . ")";
         return $sql;
     }
     private function update() {
-        $sql = "anytihng";
+        $tableName = $this->tablename;
+        $sql = " UPDATE " .$tableName." SET password='9999' WHERE id=".$this->id;
         return $sql;
         echo 'I just updated record' . $this->id;
     }
@@ -106,7 +106,7 @@ class model {
         $stmt = $db->prepare($sql);
         $stmt->execute();
         echo 'I just deleted record: ' . $this->id .'<br>';
-    }
+    }*/
 }
 class account extends model {
     public $id;
@@ -117,9 +117,11 @@ class account extends model {
     public $birthday;
     public $gender;
     public $password;
-    public static function table()
+    static $columnString='id, email, fname, lname, phone, birthday, gender, password';
+    static $valueString= '1, lj@njit.edu, Rob, Holding, 8882349999, NULL, male, 2222';
+    public function __construct()
     {
-        $table->tableName = 'accounts';
+        $this->tableName = 'accounts';
     }
 }
 class todo extends model {
@@ -130,6 +132,8 @@ class todo extends model {
     public $duedate;
     public $message;
     public $isdone;
+    static $columnString='id, owneremail, ownerid, createddate, duedate, message, isdone';
+    static $valueString= '6, "vj@njit.edu", 2, "2017-05-30", "2017-06-15", "Activerecord", 0';
     public function __construct()
     {
         $this->tableName = 'todos';
@@ -155,17 +159,38 @@ class todo extends model {
 }
 
 
+echo '<h1>Select all records from Accounts table</h1>';
+$record = accounts::findAll();
+displaytable::showtable($record);
 
-$records = accounts::findAll();
-print_r($records);
-displaytable::showtable($records);
-/*$records = todos::findAll();
-$record = todos::findOne(1);
+echo '<h1>Select all records from Todos table</h1>';
+$record = todos::findAll();
+displaytable::showtable($record);
+
+echo '<h1>Selecting an id from Accounts Table where ID is : 2 <h1>';
+$record = accounts::findOne(2);
+displaytable::showtable($record);
+
+echo '<h1>Selecting an id from Todos Table where ID is : 7 <h1>';
+$record = todos::findOne(7);
+displaytable::showtable($record);
+
+echo '<h1>Insert a record in Todos Table<h1>';
+$record = todos::create();
+$record->save();
+
+
+echo '<h1>Update password in Accounts Table where ID is : 12 <h1>';
+$obj = new account;
+$obj->save();
+$record = accounts::create();
+$result = $record->findAll();
+displaytable::shoowtable($result);
+
 $record = new todo();
 $record->message = 'some task';
 $record->isdone = 0;
-print_r($record);
 $record = todos::create();
-print_r($record);*/
+
 
 ?>
