@@ -7,6 +7,7 @@ define('DATABASE', 'lvj5');
 define('USERNAME', 'lvj5');
 define('PASSWORD', 'mNoRgZ79');
 define('CONNECTION', 'sql2.njit.edu');
+
 class dbConn{
     //variable to hold connection object.
     protected static $db;
@@ -16,6 +17,7 @@ class dbConn{
             // assign PDO object to db variable
             self::$db = new PDO( 'mysql:host=' . CONNECTION .';dbname=' . DATABASE, USERNAME, PASSWORD );
             self::$db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+            echo "Connection Successful</br>";
         }
         catch (PDOException $e) {
             //Output error - would normally log this to error file rather than output to user.
@@ -68,7 +70,9 @@ class todos extends collection {
     protected static $modelName = 'todo';
 }
 class model {
+
     protected $tableName;
+
     public function save()
     {
         if ($this->id = '') {
@@ -87,19 +91,36 @@ class model {
         echo 'I just saved record: ' . $this->id;
     }
     private function insert() {
-        $sql = 'sometthing';
+        $sql = "INSERT INTO $tableName (" . $columnString . ") VALUES (" . $valueString . ")</br>";
+        echo $sql;
         return $sql;
     }
     private function update() {
-        $sql = 'sometthing';
+        $sql = "anytihng";
         return $sql;
         echo 'I just updated record' . $this->id;
     }
     public function delete() {
-        echo 'I just deleted record' . $this->id;
+        $db = dbConn::getConnection();
+        $sql = 'DELETE FROM '.$this->tableName.' WHERE id='.$this->id;
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        echo 'I just deleted record: ' . $this->id .'<br>';
     }
 }
 class account extends model {
+    public $id;
+    public $email;
+    public $fname;
+    public $lname;
+    public $phone;
+    public $birthday;
+    public $gender;
+    public $password;
+    public static function table()
+    {
+        $table->tableName = 'accounts';
+    }
 }
 class todo extends model {
     public $id;
@@ -112,26 +133,39 @@ class todo extends model {
     public function __construct()
     {
         $this->tableName = 'todos';
-	
+    
     }
 }
-// this would be the method to put in the index page for accounts
+
+ class displaytable
+ {
+    static public function showtable($result)
+    {
+    echo '<table border="1"><tr>';
+
+    foreach ($result as $row) {
+        echo "<tr>";
+    foreach ($row as $column) {
+        echo "<td>$column</td>";
+   }
+    echo "</tr>";
+  }    
+    echo "</table>";
+ } 
+}
+
+
+
 $records = accounts::findAll();
-//print_r($records);
-// this would be the method to put in the index page for todos
-$records = todos::findAll();
-//print_r($records);
-//this code is used to get one record and is used for showing one record or updating one record
+print_r($records);
+displaytable::showtable($records);
+/*$records = todos::findAll();
 $record = todos::findOne(1);
-//print_r($record);
-//this is used to save the record or update it (if you know how to make update work and insert)
-// $record->save();
-//$record = accounts::findOne(1);
-//This is how you would save a new todo item
 $record = new todo();
 $record->message = 'some task';
 $record->isdone = 0;
-//$record->save();
 print_r($record);
 $record = todos::create();
-print_r($record);
+print_r($record);*/
+
+?>
