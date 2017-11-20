@@ -136,17 +136,29 @@ class todo extends model {
  {
     static public function showtable($result)
     {
-    echo '<table border="1"><tr>';
-
-    foreach ($result as $row) {
-        echo "<tr>";
-    foreach ($row as $column) {
-        echo "<td>$column</td>";
-   }
+  
+  echo '<table border="1"><tr>';
+  $i=0;
+  foreach ($result as $row) 
+  {
+    echo "<tr>";
+    foreach($row as $key => $value)
+    {
+      if($i==0)
+      {
+        echo "<th>".$key."</th>";
+      }   
+    }
+    $i = $i + 1;
+    echo "</tr><tr>";
+    foreach ($row as $field) 
+    {
+      echo "<td>".$field."</td>";
+    }
     echo "</tr>";
-  }    
-    echo "</table>";
- } 
+  }
+  echo "</table><br><br>";
+  }
 }
 
 
