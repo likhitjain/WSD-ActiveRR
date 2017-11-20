@@ -174,13 +174,13 @@ $result = todos::findAll();
 displaytable::showtable($result);
 
 echo '<h1>Update password in Accounts Table where id is 12 <h1>';
-    $record = accounts::create();
+$record = accounts::create();
 $record->id=12;
 $record->save();
 $result = accounts::findAll();
 displaytable::showtable($result);
 
-echo '<h1>Delete ID 13 from Account Table <h1>';
+echo '<h1>Delete id 13 from Account Table <h1>';
 $record = accounts::create();
 $record->delete(13);
 $result = accounts::findAll();
