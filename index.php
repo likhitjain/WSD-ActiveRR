@@ -1,6 +1,6 @@
 <?php
 
-//turn on debugging messages
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 define('DATABASE', 'lvj5');
@@ -30,8 +30,8 @@ class dbConn{
 }
 class collection {
     static public function create() {
-      $model = new static::$modelName;
-      return $model;
+        $model = new static::$modelName;
+        return $model;
     }
     static public function findAll() {
         $db = dbConn::getConnection();
@@ -52,7 +52,6 @@ class collection {
         $statement->execute();
         $class = static::$modelName;
         $statement->setFetchMode(PDO::FETCH_CLASS, $class);
-        //print_r($statement);
         $recordsSet =  $statement->fetchAll();
         return $recordsSet;     
     }
@@ -78,17 +77,12 @@ class model {
         } else {
             $sql = $this->update();
         }
-            echo $sql;
+ 
 
         $db = dbConn::getConnection();
         $statement = $db->prepare($sql);
         $statement->execute();
-      //  $tableName = $this->tableName;
-/*        $array = get_object_vars($this);
-        $columnString = implode(',', $array);
-        $valueString = ":".implode(',:', $array);*/
-       // echo "INSERT INTO $tableName (" . $columnString . ") VALUES (" . $valueString . ")</br>";
-       // echo 'I just saved record: ' . $this->id;
+      
     }
     private function insert() {
         $sql = "INSERT INTO " .$this->tableName." (" . static::$columnString . ") VALUES (" . static::$valueString . ")";
@@ -97,13 +91,11 @@ class model {
     private function update() {
 
         $sql = " UPDATE " .$this->tableName." SET password='9999' WHERE id=".$this->id;
-        echo $sql;
         return $sql;
     }
     public function delete($id) {
         $db = dbConn::getConnection();
-        $sql = 'DELETE FROM '.$this->tableName.' WHERE id='.$id;
-        echo $sql;
+        $sql = 'DELETE FROM '.$this->tableName.' WHERE id='.$id; 
         $stmt = $db->prepare($sql);
         $stmt->execute();
     }
@@ -177,7 +169,8 @@ displaytable::showtable($record);
 
 echo '<h1>Insert a record in Todos Table<h1>';
 $record = todos::create();
-//$record->save();
+$record->delete(6);
+$record->save();
 $result = todos::findAll();
 displaytable::showtable($result);
 
@@ -193,10 +186,6 @@ $record = accounts::create();
 $record->delete(13);
 $result = accounts::findAll();
 displaytable::showtable($result);
-
-
-
-
 
 
 ?>
