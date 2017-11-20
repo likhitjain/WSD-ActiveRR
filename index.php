@@ -89,7 +89,6 @@ class model {
         return $sql;
     }
     private function update() {
-
         $sql = " UPDATE " .$this->tableName." SET password='9999' WHERE id=".$this->id;
         return $sql;
     }
@@ -159,11 +158,11 @@ echo '<h1>Select all records from Todos table</h1>';
 $record = todos::findAll();
 displaytable::showtable($record);
 
-echo '<h1>Selecting an id from Accounts Table where ID is : 2 <h1>';
+echo '<h1>Selecting an id from Accounts Table where id is 2 <h1>';
 $record = accounts::findOne(2);
 displaytable::showtable($record);
 
-echo '<h1>Selecting an id from Todos Table where ID is : 7 <h1>';
+echo '<h1>Selecting an id from Todos Table where id is 7 <h1>';
 $record = todos::findOne(7);
 displaytable::showtable($record);
 
@@ -174,8 +173,8 @@ $record->save();
 $result = todos::findAll();
 displaytable::showtable($result);
 
-echo '<h1>Update password in Accounts Table where ID is : 12 <h1>';
-$record = accounts::create();
+echo '<h1>Update password in Accounts Table where id is 12 <h1>';
+    $record = accounts::create();
 $record->id=12;
 $record->save();
 $result = accounts::findAll();
