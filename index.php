@@ -106,7 +106,6 @@ class model {
         echo $sql;
         $stmt = $db->prepare($sql);
         $stmt->execute();
-        //echo 'I just deleted record: ' . $this->id .'<br>';
     }
 }
 class account extends model {
@@ -176,18 +175,24 @@ echo '<h1>Selecting an id from Todos Table where ID is : 7 <h1>';
 $record = todos::findOne(7);
 displaytable::showtable($record);
 
-//echo '<h1>Insert a record in Todos Table<h1>';
-//$record = todos::create();
+echo '<h1>Insert a record in Todos Table<h1>';
+$record = todos::create();
 //$record->save();
+$result = todos::findAll();
+displaytable::showtable($result);
 
 echo '<h1>Update password in Accounts Table where ID is : 12 <h1>';
 $record = accounts::create();
 $record->id=12;
 $record->save();
+$result = accounts::findAll();
+displaytable::showtable($result);
 
 echo '<h1>Delete ID 13 from Account Table <h1>';
 $record = accounts::create();
 $record->delete(13);
+$result = accounts::findAll();
+displaytable::showtable($result);
 
 
 
